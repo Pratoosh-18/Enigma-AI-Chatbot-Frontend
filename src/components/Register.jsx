@@ -31,7 +31,8 @@ const Register = () => {
         navigate("/login");
       })
       .catch((error) => {
-        setIsRegistered(true);
+        console.log(error)
+        // setIsRegistered(true);
       });
   };
   return (
