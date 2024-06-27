@@ -34,6 +34,8 @@ const Login = () => {
         console.error("Error:", error);
     }else{
         console.log("Success:", data);
+        loginUser(d.updatedUser)
+        console.log("Login response : ",d.updatedUser)
         console.log(d.at);
         localStorage.setItem('enigmaaiv3at',d.at)
         navigate("/");

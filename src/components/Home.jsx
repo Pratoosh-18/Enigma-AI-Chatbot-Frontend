@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import runChat from "../gemini/gemini";
 import Navbar from "./Navbar";
 import { UserContext } from "../Context/UserContext";
+import PromtAndResponse from "./PromtAndResponse";
 
 const Home = () => {
   const [prompt, setPrompt] = useState("");
@@ -9,7 +10,15 @@ const Home = () => {
   const [APIresponse, setAPIresponse] = useState("");
   const promptAPI = "http://localhost:8000/api/v3/user/promptData";
 
+  const [components, setComponents] = useState([]);
+
   const { user, setUser } = useContext(UserContext);
+
+  const addComponent = (prop, res) => {
+    const newComponent = <PromtAndResponse p={prop} r={res} />;
+    // const newComponent = <PromtAndResponse/>;
+    setComponents([...components, newComponent]);
+  };
 
   const handelShowCurrentUser = () => {
     console.log(user);
@@ -64,7 +73,15 @@ const Home = () => {
     return result.join("\n");
   };
 
+  const handleNoAPI = async (prop) => {
+    const resp = await runChat(prop);
+    const res = formatDynamicParagraph(resp);
+    addComponent(prop, res);
+  };
+
   const handleAPI = async (prop) => {
+    console.log("Context user = ", user);
+    let componentRes = "";
     try {
       // Start loading indicator
       setIsLoading(true);
@@ -75,6 +92,7 @@ const Home = () => {
       // Send the prompt to runChat and get the response
       const resp = await runChat(prop);
       const res = formatDynamicParagraph(resp);
+      componentRes = res;
       console.log("runChat Response:", res);
 
       // Prepare data to be sent to the API
@@ -99,15 +117,22 @@ const Home = () => {
 
       const responseData = await response.json();
       console.log("API Response:", responseData);
-      setUser(responseData);
+      // setUser(responseData.updatedUser);
+      console.log(responseData.updatedUser)
 
       // Update the API response state
       setAPIresponse(res);
+
+      console.log("prop=", prop, "component res =", res);
+      addComponent(prop, res);
     } catch (error) {
       console.log("Error in handling API:", error);
     } finally {
       // Stop loading indicator
       setIsLoading(false);
+      // console.log(typeof(prop),typeof(componentRes))
+      // addComponent("This is a sample propmt","This is the sample response")
+      // addComponent(prop,componentRes)
     }
   };
 
@@ -119,7 +144,8 @@ const Home = () => {
       <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[80%]">
         <Navbar />
         <div className="border-2 h-[78vh] border-black overflow-y-scroll">
-          Chat
+          <div>{components}</div>
+
           <div>{isLoading ? <>Loading...</> : <></>}</div>
           <pre className="whitespace-pre-wrap">{APIresponse}</pre>
         </div>
@@ -129,10 +155,31 @@ const Home = () => {
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt"
           />
-          <button onClick={() => handleAPI(prompt)}>Send</button>
-          <button onClick={handelShowCurrentUser}>
+          {/* <button onClick={() => handleAPI(prompt)}>Send</button> */}
+
+          <button onClick={handelShowCurrentUser}>User</button>
+
+          <div>
+            {user._id ? (
+                <button
+                onClick={() => {
+                  handleAPI(prompt);
+                }}
+              >
+                Send with user
+              </button>
+            ) : (
+              <button onClick={() => handleNoAPI(prompt)}>Send without user</button>
+            )}
+          </div>
+
+          {/* <button onClick={() => {
+            handleAPI(prompt)
+          }}>Send</button> */}
+
+          {/* <button onClick={handelShowCurrentUser}>
             Show current user in context
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
