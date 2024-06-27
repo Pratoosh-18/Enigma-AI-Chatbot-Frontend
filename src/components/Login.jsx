@@ -26,7 +26,7 @@ const Login = () => {
       body: JSON.stringify(data), 
     })
 
-    const d = res.json()
+    const d = await res.json()
 
     if(res.status === 401 || !d){
       console.log("Invalid login credentials");
@@ -34,6 +34,8 @@ const Login = () => {
         console.error("Error:", error);
     }else{
         console.log("Success:", data);
+        console.log(d.at);
+        localStorage.setItem('at',d.at)
         navigate("/");
     }
       // .then((response) => response.json())

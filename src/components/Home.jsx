@@ -12,38 +12,51 @@ const Home = () => {
   const {user} = useContext(UserContext)
 
   const handleAPI = async (prop) => {
-    const data = {
-      "prompt":"This is a sample prompt",
-      "response":"This is a sample response"
-    }
-
     try {
-      fetch(promptAPI, {
+      // Start loading indicator
+      setIsLoading(true);
+  
+      // Log prop
+      console.log('Prop:', prop);
+  
+      // Send the prompt to runChat and get the response
+      const res = await runChat(prop);
+      console.log('runChat Response:', res);
+  
+      // Prepare data to be sent to the API
+      const data = {
+        "prompt": prop,
+        "response": res,
+        "accessToken": localStorage.getItem("at")
+      };
+      console.log('Data being sent to API:', data);
+  
+      // Log the user object if necessary
+      console.log(user);
+  
+      // Send data to the promptAPI
+      const response = await fetch(promptAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
-        credentials: true
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.log("Error in sending the prompt")
-        });
+        body: JSON.stringify(data)
+      });
+  
+      const responseData = await response.json();
+      console.log('API Response:', responseData);
+  
+      // Update the API response state
+      setAPIresponse(res);
     } catch (error) {
-      console.log("Error in prompt data")
+      console.log("Error in handling API:", error);
+    } finally {
+      // Stop loading indicator
+      setIsLoading(false);
     }
-
-    console.log(user)
-    prop=prompt
-    setIsLoading(true);
-    const res = await runChat(prop);
-    setIsLoading(false);
-    setAPIresponse(res);
   };
+  
+  
 
   return (
     <div className="h-[100vh] w-[100%] flex ">
@@ -61,7 +74,7 @@ const Home = () => {
         </div>
         <div className="border-2 h-[12vh] border-black">
           <input type="text" onChange={(e)=>setPrompt(e.target.value)} placeholder="Enter the prompt"/>
-          <button onClick={handleAPI}>Send</button>
+          <button onClick={()=> handleAPI(prompt)}>Send</button>
         </div>
       </div>
     </div>
