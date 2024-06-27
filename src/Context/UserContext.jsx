@@ -11,7 +11,7 @@ const UserContextProvider = (prop) => {
     }
 
     const ContextVal = {
-        user,loginUser
+        user,setUser,loginUser
     }
 
     return (
