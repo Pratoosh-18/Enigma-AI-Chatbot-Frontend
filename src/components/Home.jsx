@@ -11,6 +11,52 @@ const Home = () => {
 
   const {user} = useContext(UserContext)
 
+  const formatDynamicParagraph = (paragraph)=> {
+    // Split the paragraph into lines
+    const lines = paragraph.split('\n').map(line => line.trim()).filter(line => line);
+  
+    // Initialize a result array to store the formatted output
+    let result = [];
+  
+    // Flags to track the current level of bullet points
+    let currentLevel = 0;
+  
+    // Iterate through each line and format accordingly
+    lines.forEach(line => {
+      if (line.startsWith('***')) {
+        // Sub-bullet points (level 2)
+        currentLevel = 2;
+        result.push(`    - ${line.replace(/\*/g, '').trim()}`);
+      } else if (line.startsWith('**')) {
+        // Headings or main bullet points (level 1)
+        if (line.includes(':')) {
+          // Headings (consider ':' as a heading marker)
+          currentLevel = 0;
+          result.push(line.replace(/\*\*/g, '').trim());
+        } else {
+          currentLevel = 1;
+          result.push(`  - ${line.replace(/\*/g, '').trim()}`);
+        }
+      } else if (line.startsWith('*')) {
+        // Main bullet points (level 0)
+        currentLevel = 0;
+        result.push(`- ${line.replace(/\*/g, '').trim()}`);
+      } else {
+        // Handle regular text or unformatted lines
+        if (currentLevel === 2) {
+          result.push(`    - ${line}`);
+        } else if (currentLevel === 1) {
+          result.push(`  - ${line}`);
+        } else {
+          result.push(line);
+        }
+      }
+    });
+  
+    // Join the formatted result and return as a single string
+    return result.join('\n');
+  }
+
   const handleAPI = async (prop) => {
     try {
       // Start loading indicator
@@ -20,14 +66,15 @@ const Home = () => {
       console.log('Prop:', prop);
   
       // Send the prompt to runChat and get the response
-      const res = await runChat(prop);
+      const resp = await runChat(prop);
+      const res = formatDynamicParagraph(resp)
       console.log('runChat Response:', res);
   
       // Prepare data to be sent to the API
       const data = {
         "prompt": prop,
         "response": res,
-        "accessToken": localStorage.getItem("at")
+        "accessToken": localStorage.getItem("enigmaaiv3at")
       };
       console.log('Data being sent to API:', data);
   
@@ -56,8 +103,6 @@ const Home = () => {
     }
   };
   
-  
-
   return (
     <div className="h-[100vh] w-[100%] flex ">
       <div className="left-bar w-[20%] border-2  hidden md:flex h-[100%]">
