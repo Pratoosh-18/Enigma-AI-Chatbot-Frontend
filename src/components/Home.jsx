@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import runChat from "../gemini/gemini";
 import Navbar from "./Navbar";
 import { UserContext } from "../Context/UserContext";
@@ -9,15 +9,26 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [APIresponse, setAPIresponse] = useState("");
   const promptAPI = "http://localhost:8000/api/v3/user/promptData";
+  const refreshServer = "http://localhost:8000/api/v3/user/refreshServer"
 
   const [components, setComponents] = useState([]);
 
   const { user, setUser } = useContext(UserContext);
+  
+  useEffect(() =>{
+
+    if (user && user._id) {
+      user.searchHistory.forEach((item) => {
+        console.log("Yes");
+        addComponent(item.prompt, item.response);
+      });
+    }
+  }, [user]);
 
   const addComponent = (prop, res) => {
-    const newComponent = <PromtAndResponse p={prop} r={res} />;
-    // const newComponent = <PromtAndResponse/>;
-    setComponents([...components, newComponent]);
+    console.log("prop inside function =", prop, "component res inside function =", res);
+    const newComponent = <PromtAndResponse key={`${prop}-${res}`} p={prop} r={res} />;
+    setComponents((prevComponents) => [...prevComponents, newComponent]);
   };
 
   const handelShowCurrentUser = () => {
@@ -130,9 +141,6 @@ const Home = () => {
     } finally {
       // Stop loading indicator
       setIsLoading(false);
-      // console.log(typeof(prop),typeof(componentRes))
-      // addComponent("This is a sample propmt","This is the sample response")
-      // addComponent(prop,componentRes)
     }
   };
 
@@ -147,7 +155,7 @@ const Home = () => {
           <div>{components}</div>
 
           <div>{isLoading ? <>Loading...</> : <></>}</div>
-          <pre className="whitespace-pre-wrap">{APIresponse}</pre>
+          {/* <pre className="whitespace-pre-wrap">{APIresponse}</pre> */}
         </div>
         <div className="border-2 h-[12vh] border-black">
           <input
@@ -155,7 +163,6 @@ const Home = () => {
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt"
           />
-          {/* <button onClick={() => handleAPI(prompt)}>Send</button> */}
 
           <button onClick={handelShowCurrentUser}>User</button>
 
