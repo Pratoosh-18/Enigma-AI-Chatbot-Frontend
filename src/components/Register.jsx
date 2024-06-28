@@ -7,65 +7,74 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [passwordConfirmMatch, setPasswordConfirmMatch] = useState(true)
+  const [passwordConfirmMatch, setPasswordConfirmMatch] = useState(true);
   const registerAPI =
     "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/register";
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const [isEmpty, setIsEmpty] = useState(false)
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const handleRegister = async () => {
     setIsRegistered(false);
     setIsLoading(true);
 
-    if(username === '' || password === '' || email === '' || confirmPassword === ''){
-      setIsEmpty(true)
-      setIsLoading(false)
-    }else{
-      if(password===confirmPassword){
+    if (
+      username === "" ||
+      password === "" ||
+      email === "" ||
+      confirmPassword === ""
+    ) {
+      setIsEmpty(true);
+      setIsLoading(false);
+    } else {
+      if (password === confirmPassword) {
         const data = {
           username: username,
           email: email,
           password: password,
         };
-        
-      await fetch(registerAPI, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        console.log("Success:", data);
+
+        await fetch(registerAPI, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Success:", data);
+            setIsLoading(false);
+            navigate("/login");
+          })
+          .catch((error) => {
+            console.log(error);
+            setIsRegistered(true);
+            setIsLoading(false);
+          });
+      } else {
+        setPasswordConfirmMatch(false);
         setIsLoading(false);
-        navigate("/login");
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsRegistered(true);
-        setIsLoading(false);
-      });
-    }else{
-      setPasswordConfirmMatch(false)
-      setIsLoading(false)
+      }
     }
-    }
-  }
+  };
   return (
     <div className="h-[100vh] w-[100vw] poppins bg-[#171717] flex justify-between items-center flex-col">
-      <div  className="flex justify-start w-full px-10 mb-5 text-base">
-      <Link to={"/"} className="mt-10 text-base">
-      &#8592; Home
-      </Link>
+      <div className="flex justify-start w-full px-10 mb-5 text-base">
+        <Link to={"/"} className="mt-10 text-base">
+          &#8592; Home
+        </Link>
       </div>
       <div className="box w-[250px] sm:w-[300px] flex flex-col justify-center items-center">
         <div className="mb-8 text-2xl flex gap-3">
-        <img className="h-[40px] w-[40px]" src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" alt="" />
-          Register as a new user
-          </div>
+          <img
+            className="h-[40px] w-[40px]"
+            src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png"
+            alt=""
+          />
+          Register a new user
+        </div>
 
         <div className="flex w-full">
           <p className="text-sm mb-1">Create a username:</p>
@@ -79,7 +88,7 @@ const Register = () => {
           }}
           type="text"
           placeholder="username"
-          />
+        />
 
         <div className="flex w-full">
           <p className="text-sm mb-1">Enter your email:</p>
@@ -93,7 +102,7 @@ const Register = () => {
           }}
           type="text"
           placeholder="email"
-          />
+        />
 
         <div className="flex w-full">
           <p className="text-sm mb-1">Create a password:</p>
@@ -107,7 +116,7 @@ const Register = () => {
           }}
           type="password"
           placeholder="password"
-          />
+        />
 
         <div className="flex w-full">
           <p className="text-sm mb-1">Confirm password:</p>
@@ -123,10 +132,9 @@ const Register = () => {
           placeholder="password"
         />
         <div className="text-red-500 mb-3">
-
-        {passwordConfirmMatch?<></>:<>Paasword does not match !</>}
-        {isRegistered ? <>This User is already registered !</> : <></>}
-        {isEmpty ? <>Please enter all the details !</> : <></>}
+          {passwordConfirmMatch ? <></> : <>Paasword does not match !</>}
+          {isRegistered ? <>This User is already registered !</> : <></>}
+          {isEmpty ? <>Please enter all the details !</> : <></>}
         </div>
 
         {isLoading ? (
