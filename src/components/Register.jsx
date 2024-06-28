@@ -5,7 +5,7 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const registerAPI = "http://localhost:8000/api/v3/user/register";
+  const registerAPI = "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/register";
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(false);
 

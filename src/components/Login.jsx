@@ -1,3 +1,89 @@
+// import React, { useContext, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { UserContext } from "../Context/UserContext";
+
+// const Login = () => {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const loginAPI = "http://localhost:8000/api/v3/user/login";
+//   const navigate = useNavigate();
+//   const [isNotUser, setIsNotUser] = useState(false);
+
+//   const { user, loginUser } = useContext(UserContext);
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+//     const data = {
+//       email: email,
+//       password: password,
+//     };
+
+//     const res = await fetch(loginAPI, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(data), 
+//     })
+
+//     const d = await res.json()
+
+//     if(res.status === 401 || !d){
+//       console.log("Invalid login credentials");
+//         setIsNotUser(true);
+//         console.error("Error:", error);
+//     }else{
+//         console.log("Success:", data);
+//         loginUser(d.updatedUser)
+//         console.log("Login response : ",d.updatedUser)
+//         console.log(d.at);
+//         localStorage.setItem('enigmaaiv3at',d.at)
+//         navigate("/");
+//     }
+//       // .then((response) => response.json())
+//       // .then(async (data) => {
+//       //   await loginUser(data);
+//       //   console.log("Success:", data);
+//       //   navigate("/");
+//       // })
+//       // .catch((error) => {
+//       //   console.log("Invalid login credentials");
+//       //   setIsNotUser(true);
+//       //   console.error("Error:", error);
+//       // });
+
+//     console.log(email, password);
+//   };
+//   return (
+//     <>
+//       <div>Login</div>
+//       <form method="POST">
+//         <input
+//           onChange={(e) => {
+//             setEmail(e.target.value);
+//             setIsNotUser(false);
+//           }}
+//           type="text"
+//           placeholder="email"
+//         />
+//         <input
+//           onChange={(e) => {
+//             setPassword(e.target.value);
+//             setIsNotUser(false);
+//           }}
+//           type="text"
+//           placeholder="password"
+//         />
+//         <button onClick={handleLogin}>Login</button>
+//         <div>{isNotUser ? <>Invalid Login credentials</> : <></>}</div>
+//       </form>
+//     </>
+//   );
+// };
+
+// export default Login;
+
+
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../Context/UserContext";
@@ -5,7 +91,7 @@ import { UserContext } from "../Context/UserContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const loginAPI = "http://localhost:8000/api/v3/user/login";
+  const loginAPI = "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/login";
   const navigate = useNavigate();
   const [isNotUser, setIsNotUser] = useState(false);
 
@@ -13,51 +99,38 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const data = {
-      email: email,
-      password: password,
-    };
+    const data = { email, password };
 
-    const res = await fetch(loginAPI, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data), 
-    })
+    try {
+      const res = await fetch(loginAPI, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-    const d = await res.json()
+      const d = await res.json();
 
-    if(res.status === 401 || !d){
-      console.log("Invalid login credentials");
+      if (!d) {
+        console.log("Invalid login credentials");
         setIsNotUser(true);
-        console.error("Error:", error);
-    }else{
+      } else {
         console.log("Success:", data);
-        loginUser(d.updatedUser)
-        console.log("Login response : ",d.updatedUser)
-        console.log(d.at);
-        localStorage.setItem('enigmaaiv3at',d.at)
+        loginUser(d.updatedUser);
+        // console.log("Login response:", d.updatedUser);
+        // console.log(d.at);
+        localStorage.setItem("enigmaaiv3at", d.at);
         navigate("/");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setIsNotUser(true);
     }
-      // .then((response) => response.json())
-      // .then(async (data) => {
-      //   await loginUser(data);
-      //   console.log("Success:", data);
-      //   navigate("/");
-      // })
-      // .catch((error) => {
-      //   console.log("Invalid login credentials");
-      //   setIsNotUser(true);
-      //   console.error("Error:", error);
-      // });
-
-    console.log(email, password);
   };
+
   return (
     <>
       <div>Login</div>
-      <form method="POST">
+      <form method="POST" onSubmit={handleLogin}>
         <input
           onChange={(e) => {
             setEmail(e.target.value);
@@ -65,17 +138,19 @@ const Login = () => {
           }}
           type="text"
           placeholder="email"
+          value={email}
         />
         <input
           onChange={(e) => {
             setPassword(e.target.value);
             setIsNotUser(false);
           }}
-          type="text"
+          type="password"
           placeholder="password"
+          value={password}
         />
-        <button onClick={handleLogin}>Login</button>
-        <div>{isNotUser ? <>Invalid Login credentials</> : <></>}</div>
+        <button type="submit">Login</button>
+        {isNotUser && <div>Invalid Login credentials</div>}
       </form>
     </>
   );

@@ -8,8 +8,7 @@ const Home = () => {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [APIresponse, setAPIresponse] = useState("");
-  const promptAPI = "http://localhost:8000/api/v3/user/promptData";
-  const refreshServer = "http://localhost:8000/api/v3/user/refreshServer"
+  const promptAPI = "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/promptData";
 
   const [components, setComponents] = useState([]);
 
@@ -19,14 +18,13 @@ const Home = () => {
 
     if (user && user._id) {
       user.searchHistory.forEach((item) => {
-        console.log("Yes");
         addComponent(item.prompt, item.response);
       });
     }
   }, [user]);
 
   const addComponent = (prop, res) => {
-    console.log("prop inside function =", prop, "component res inside function =", res);
+    // console.log("prop inside function =", prop, "component res inside function =", res);
     const newComponent = <PromtAndResponse key={`${prop}-${res}`} p={prop} r={res} />;
     setComponents((prevComponents) => [...prevComponents, newComponent]);
   };
@@ -91,14 +89,14 @@ const Home = () => {
   };
 
   const handleAPI = async (prop) => {
-    console.log("Context user = ", user);
+    // console.log("Context user = ", user);
     let componentRes = "";
     try {
       // Start loading indicator
       setIsLoading(true);
 
       // Log prop
-      console.log("Prop:", prop);
+      // console.log("Prop:", prop);
 
       // Send the prompt to runChat and get the response
       const resp = await runChat(prop);
@@ -112,10 +110,10 @@ const Home = () => {
         response: res,
         accessToken: localStorage.getItem("enigmaaiv3at"),
       };
-      console.log("Data being sent to API:", data);
+      // console.log("Data being sent to API:", data);
 
       // Log the user object if necessary
-      console.log(user);
+      // console.log(user);
 
       // Send data to the promptAPI
       const response = await fetch(promptAPI, {
@@ -127,14 +125,14 @@ const Home = () => {
       });
 
       const responseData = await response.json();
-      console.log("API Response:", responseData);
+      // console.log("API Response:", responseData);
       // setUser(responseData.updatedUser);
-      console.log(responseData.updatedUser)
+      // console.log(responseData.updatedUser)
 
       // Update the API response state
       setAPIresponse(res);
 
-      console.log("prop=", prop, "component res =", res);
+      // console.log("prop=", prop, "component res =", res);
       addComponent(prop, res);
     } catch (error) {
       console.log("Error in handling API:", error);
