@@ -16,6 +16,10 @@ const Home = () => {
   const { user, setUser } = useContext(UserContext);
   const chatComponentRef = useRef(null);
 
+  useEffect(()=>{
+    fetch("https://enigmav3-ai-chatbot-backend.onrender.com/")
+  })
+
   useEffect(() => {
     if (user && user._id) {
       user.searchHistory.forEach((item) => {
@@ -31,7 +35,6 @@ const Home = () => {
   }, [components]);
 
   const addComponent = (prop, res) => {
-    // console.log("prop inside function =", prop, "component res inside function =", res);
     const newComponent = (
       <PromtAndResponse key={`${prop}-${res}`} p={prop} r={res} />
     );
@@ -174,7 +177,7 @@ const Home = () => {
                 ></lord-icon>
               </button>
             )}
-            <button onClick={scrollToBottom}>scroll</button>
+            {/* <button onClick={scrollToBottom}>scroll</button> */}
           </div>
         </div>
       </div>
