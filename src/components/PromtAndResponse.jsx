@@ -2,9 +2,16 @@ import React from 'react'
 
 const PromtAndResponse = ({p,r}) => {
   return (
-    <pre className='border-2 border-black m-4 whitespace-pre-wrap'>
-        <div>{p}</div>
-        <div>{r}</div>
+    <pre className='flex flex-col m-4 whitespace-pre-wrap'>
+      <div className='flex flex-row-reverse'>
+
+        <div className='flex justify-end px-4 border-[1px] w-fit'>{p}</div>
+      </div>
+
+      <div className='flex'>
+
+        <div className='flex justify-start px-4 border-[1px] w-fit'>{r}</div>
+      </div>
     </pre>
   )
 }
