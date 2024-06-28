@@ -49,19 +49,8 @@ import {
   
     const result = await chat.sendMessage(promt);
     const response = result.response;
-    // let finalres="";
-    // console.log(response.text());
-    // console.log(response.text().length);
-    // let responsetext=response.text();
-    // for(let i=0;i<responsetext.length;i++){
-    //   if(responsetext[i]===' ' && responsetext[i-1]==='*' && responsetext[i-2]==='*'){
-    //     finalres=finalres+'\n';
-    //   }
-    //     finalres=finalres+responsetext[i];
-    //   }
+    
       return response.text()
-      // return finalres;
-      // return responsetext;
   }
   
 export default runChat;

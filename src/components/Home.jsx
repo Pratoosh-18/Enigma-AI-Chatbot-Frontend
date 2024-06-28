@@ -34,38 +34,30 @@ const Home = () => {
   };
 
   const formatDynamicParagraph = (paragraph) => {
-    // Split the paragraph into lines
-    const lines = paragraph
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line);
-
-    // Initialize a result array to store the formatted output
+    const lines = paragraph.split("\n");
     let result = [];
-
-    // Flags to track the current level of bullet points
     let currentLevel = 0;
-
-    // Iterate through each line and format accordingly
+  
     lines.forEach((line) => {
-      if (line.startsWith("***")) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith("***")) {
         // Sub-bullet points (level 2)
         currentLevel = 2;
-        result.push(`    - ${line.replace(/\*/g, "").trim()}`);
-      } else if (line.startsWith("**")) {
+        result.push(`    - ${trimmedLine.replace(/\*/g, "").trim()}`);
+      } else if (trimmedLine.startsWith("**")) {
         // Headings or main bullet points (level 1)
-        if (line.includes(":")) {
+        if (trimmedLine.includes(":")) {
           // Headings (consider ':' as a heading marker)
           currentLevel = 0;
-          result.push(line.replace(/\*\*/g, "").trim());
+          result.push(trimmedLine.replace(/\*\*/g, "").trim());
         } else {
           currentLevel = 1;
-          result.push(`  - ${line.replace(/\*/g, "").trim()}`);
+          result.push(`  - ${trimmedLine.replace(/\*/g, "").trim()}`);
         }
-      } else if (line.startsWith("*")) {
+      } else if (trimmedLine.startsWith("*")) {
         // Main bullet points (level 0)
         currentLevel = 0;
-        result.push(`- ${line.replace(/\*/g, "").trim()}`);
+        result.push(`- ${trimmedLine.replace(/\*/g, "").trim()}`);
       } else {
         // Handle regular text or unformatted lines
         if (currentLevel === 2) {
@@ -77,10 +69,10 @@ const Home = () => {
         }
       }
     });
-
-    // Join the formatted result and return as a single string
+  
     return result.join("\n");
   };
+  
 
   const handleNoAPI = async (prop) => {
     const resp = await runChat(prop);
@@ -144,25 +136,24 @@ const Home = () => {
 
   return (
     <div className="h-[100vh] w-[100%] flex ">
-      <div className="left-bar w-[20%] border-2  hidden md:flex h-[100%]">
+      <div className="left-bar w-[20%] bg-[#212121] hidden md:flex h-[100%]">
         <p>History</p>
       </div>
       <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[80%]">
         <Navbar />
-        <div className="border-2 h-[78vh] border-black overflow-y-scroll">
+        <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
           <div>{components}</div>
 
           <div>{isLoading ? <>Loading...</> : <></>}</div>
           {/* <pre className="whitespace-pre-wrap">{APIresponse}</pre> */}
         </div>
-        <div className="border-2 h-[12vh] border-black">
+        <div className="h-[12vh] poppins bg-[#171717] flex justify-center gap-5 items-center">
           <input
+          className="bg-[#171717] border-[1px] h-12 px-3 w-[400px] rounded-lg border-white"
             type="text"
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt"
           />
-
-          <button onClick={handelShowCurrentUser}>User</button>
 
           <div>
             {user._id ? (
@@ -171,20 +162,13 @@ const Home = () => {
                   handleAPI(prompt);
                 }}
               >
-                Send with user
+                Send
               </button>
             ) : (
-              <button onClick={() => handleNoAPI(prompt)}>Send without user</button>
+              <button onClick={() => handleNoAPI(prompt)}>Send</button>
             )}
           </div>
 
-          {/* <button onClick={() => {
-            handleAPI(prompt)
-          }}>Send</button> */}
-
-          {/* <button onClick={handelShowCurrentUser}>
-            Show current user in context
-          </button> */}
         </div>
       </div>
     </div>
