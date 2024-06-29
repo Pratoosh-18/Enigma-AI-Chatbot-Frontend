@@ -16,9 +16,9 @@ const Home = () => {
   const { user, setUser } = useContext(UserContext);
   const chatComponentRef = useRef(null);
 
-  useEffect(()=>{
-    fetch("https://enigmav3-ai-chatbot-backend.onrender.com/")
-  })
+  useEffect(() => {
+    fetch("https://enigmav3-ai-chatbot-backend.onrender.com/");
+  });
 
   useEffect(() => {
     if (user && user._id) {
@@ -30,7 +30,8 @@ const Home = () => {
 
   useEffect(() => {
     if (chatComponentRef.current) {
-      chatComponentRef.current.scrollTop = chatComponentRef.current.scrollHeight;
+      chatComponentRef.current.scrollTop =
+        chatComponentRef.current.scrollHeight;
     }
   }, [components]);
 
@@ -39,7 +40,7 @@ const Home = () => {
       <PromtAndResponse key={`${prop}-${res}`} p={prop} r={res} />
     );
     setComponents((prevComponents) => [...prevComponents, newComponent]);
-    scrollToBottom()
+    scrollToBottom();
   };
 
   const formatDynamicParagraph = (paragraph) => {
@@ -80,9 +81,11 @@ const Home = () => {
   };
 
   const handleNoAPI = async (prop) => {
+    setIsLoading(true);
     const resp = await runChat(prop);
     const res = formatDynamicParagraph(resp);
     addComponent(prop, res);
+    setIsLoading(false);
   };
 
   const handleAPI = async (prop) => {
@@ -137,10 +140,21 @@ const Home = () => {
       <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[100%]">
         <Navbar />
         <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
-
           <div id="chat-component">{components}</div>
 
-          <div>{isLoading ? <>Loading...</> : <></>}</div>
+          <div className="bg-[212121]">
+            {isLoading ? (
+              <div className="bg-[212121]">
+                <div className="flex z-40 gap-1 justify-center items-center bg-white dark:bg-[#171717]">
+                  <div className="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="h-4 w-4 bg-white rounded-full animate-bounce"></div>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
         <div className="h-[12vh] poppins bg-[#171717] flex justify-center gap-3 items-center">
           <input
