@@ -48,12 +48,12 @@ const Home = () => {
     const lines = paragraph.split("\n");
     let result = [];
     let currentLevel = 0;
-
+  
     lines.forEach((line) => {
       const trimmedLine = line.trim();
       if (trimmedLine.startsWith("***")) {
         currentLevel = 2;
-        result.push(`    - ${trimmedLine.replace(/\*/g, "").trim()}`);
+        result.push(`      * ${trimmedLine.replace(/\*/g, "").trim()}`); // Using an asterisk for level 2
       } else if (trimmedLine.startsWith("**")) {
         // Headings or main bullet points (level 1)
         if (trimmedLine.includes(":")) {
@@ -69,7 +69,7 @@ const Home = () => {
         result.push(`- ${trimmedLine.replace(/\*/g, "").trim()}`);
       } else {
         if (currentLevel === 2) {
-          result.push(`    - ${line}`);
+          result.push(`      * ${line}`);
         } else if (currentLevel === 1) {
           result.push(`  - ${line}`);
         } else {
@@ -77,11 +77,17 @@ const Home = () => {
         }
       }
     });
-
+  
     return result.join("\n");
-  };
+  }
+
+  const clearInputBox = () => {
+    const element = document.getElementById("input-box")
+    element.value=""
+  }
 
   const handleNoAPI = async (prop) => {
+    clearInputBox()
     setWelcomebox(false);
     setIsLoading(true);
     const resp = await runChat(prop);
@@ -172,6 +178,7 @@ const Home = () => {
         </div>
         <div className="h-[12vh] poppins bg-[#171717] flex justify-center gap-3 items-center">
           <input
+            id="input-box"
             className="bg-[#171717] border-[1px] h-12 px-3 w-[270px] sm:w-[400px] rounded-lg border-white"
             type="text"
             onChange={(e) => setPrompt(e.target.value)}
