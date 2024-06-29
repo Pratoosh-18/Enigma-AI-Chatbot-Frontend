@@ -42,10 +42,6 @@ const Home = () => {
     scrollToBottom()
   };
 
-  const handelShowCurrentUser = () => {
-    console.log(user);
-  };
-
   const formatDynamicParagraph = (paragraph) => {
     const lines = paragraph.split("\n");
     let result = [];
@@ -135,12 +131,13 @@ const Home = () => {
 
   return (
     <div className="h-[100vh] w-[100%] flex ">
-      <div className="left-bar w-[20%] bg-[#212121] hidden md:flex h-[100%] justify-center pt-5">
+      {/* <div className="left-bar w-[20%] bg-[#212121] hidden md:flex h-[100%] justify-center pt-5">
         <p>History</p>
-      </div>
-      <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[80%]">
+      </div> */}
+      <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[100%]">
         <Navbar />
         <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
+
           <div id="chat-component">{components}</div>
 
           <div>{isLoading ? <>Loading...</> : <></>}</div>

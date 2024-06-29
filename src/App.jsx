@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './components/Home'
 import Register from './components/Register'
 import Login from './components/Login'
+import dotenv from 'dotenv'
 
 const App = () => {
   return (

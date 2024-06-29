@@ -11,51 +11,65 @@ const Register = () => {
   const registerAPI =
     "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/register";
   const navigate = useNavigate();
+  const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
 
   const [isEmpty, setIsEmpty] = useState(false);
 
+  const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  const validateEmail = (email) => {
+    if (email && email.match(isValidEmail)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const handleRegister = async () => {
     setIsRegistered(false);
     setIsLoading(true);
-
-    if (
-      username === "" ||
-      password === "" ||
-      email === "" ||
-      confirmPassword === ""
-    ) {
-      setIsEmpty(true);
-      setIsLoading(false);
+    if (!validateEmail(email)) {
+      setIsEmailValid(false)
+      setIsLoading(false)
     } else {
-      if (password === confirmPassword) {
-        const data = {
-          username: username,
-          email: email,
-          password: password,
-        };
-
-        await fetch(registerAPI, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Success:", data);
-            setIsLoading(false);
-            navigate("/login");
-          })
-          .catch((error) => {
-            console.log(error);
-            setIsRegistered(true);
-            setIsLoading(false);
-          });
-      } else {
-        setPasswordConfirmMatch(false);
+      if (
+        username === "" ||
+        password === "" ||
+        email === "" ||
+        confirmPassword === ""
+      ) {
+        setIsEmpty(true);
         setIsLoading(false);
+      } else {
+        if (password === confirmPassword) {
+          const data = {
+            username: username,
+            email: email,
+            password: password,
+          };
+
+          await fetch(registerAPI, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              setIsLoading(false);
+              navigate("/login");
+            })
+            .catch((error) => {
+              console.log(error);
+              setIsRegistered(true);
+              setIsLoading(false);
+            });
+        } else {
+          setPasswordConfirmMatch(false);
+          setIsLoading(false);
+        }
       }
     }
   };
@@ -85,6 +99,7 @@ const Register = () => {
             setUsername(e.target.value);
             setIsRegistered(false);
             setIsEmpty(false);
+            setIsEmailValid(true)
           }}
           type="text"
           placeholder="username"
@@ -99,6 +114,7 @@ const Register = () => {
             setEmail(e.target.value);
             setIsRegistered(false);
             setIsEmpty(false);
+            setIsEmailValid(true)
           }}
           type="text"
           placeholder="email"
@@ -113,6 +129,7 @@ const Register = () => {
             setPassword(e.target.value);
             setIsRegistered(false);
             setIsEmpty(false);
+            setIsEmailValid(true)
           }}
           type="password"
           placeholder="password"
@@ -127,6 +144,7 @@ const Register = () => {
             setConfirmPassword(e.target.value);
             setPasswordConfirmMatch(true);
             setIsEmpty(false);
+            setIsEmailValid(true)
           }}
           type="password"
           placeholder="password"
@@ -135,6 +153,7 @@ const Register = () => {
           {passwordConfirmMatch ? <></> : <>Paasword does not match !</>}
           {isRegistered ? <>This User is already registered !</> : <></>}
           {isEmpty ? <>Please enter all the details !</> : <></>}
+          {isEmailValid ? <></> : <>Enter a valid email !</>}
         </div>
 
         {isLoading ? (

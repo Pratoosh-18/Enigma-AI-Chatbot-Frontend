@@ -11,20 +11,35 @@ const Login = () => {
   const [isNotUser, setIsNotUser] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true)
 
   const { user, loginUser } = useContext(UserContext);
+
+  const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+  const validateEmail = (email) => {
+    if (email && email.match(isValidEmail)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     const data = { email, password };
     setIsLoading(true);
 
-    if (email === "" || password === "") {
-      setIsEmpty(true);
-      setIsLoading(false);
-    } else {
-      try {
-        const res = await fetch(loginAPI, {
+    if(!validateEmail(email)){
+      setIsEmailValid(false)
+      setIsLoading(false)
+    }else{
+      if (email === "" || password === "") {
+        setIsEmpty(true);
+        setIsLoading(false);
+      } else {
+        try {
+          const res = await fetch(loginAPI, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -48,8 +63,9 @@ const Login = () => {
         setIsLoading(false);
       }
     }
+    }
   };
-
+  
   return (
     <div className="h-[100vh] w-[100vw] poppins bg-[#171717] flex justify-between items-center flex-col">
       <div className="flex justify-start w-full px-10 mb-5 text-base">
@@ -78,6 +94,7 @@ const Login = () => {
                 setEmail(e.target.value);
                 setIsNotUser(false);
                 setIsEmpty(false);
+                setIsEmailValid(true)
               }}
               type="text"
               placeholder="email"
@@ -94,6 +111,7 @@ const Login = () => {
                 setPassword(e.target.value);
                 setIsNotUser(false);
                 setIsEmpty(false);
+                setIsEmailValid(true)
               }}
               type="password"
               placeholder="password"
@@ -103,6 +121,7 @@ const Login = () => {
 
           <div className="text-red-500 mb-3 w-full text-center">
             {isNotUser ? <>Invalid login credentials !</> : <></>}
+            {isEmailValid ? <></> : <>Enter a valid email !</>}
             {isEmpty ? <>Please enter all the details !</> : <></>}
           </div>
 
@@ -141,6 +160,9 @@ const Login = () => {
               </span>
             </button>
           )}
+          {/* <button onClick={() => console.log(validateEmail(email))}>
+            Email valid?
+          </button> */}
         </div>
       </div>
       <div></div>
