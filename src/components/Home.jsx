@@ -8,6 +8,7 @@ const Home = () => {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [APIresponse, setAPIresponse] = useState("");
+  const [welcomebox, setWelcomebox] = useState(true);
   const promptAPI =
     "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/promptData";
 
@@ -81,6 +82,7 @@ const Home = () => {
   };
 
   const handleNoAPI = async (prop) => {
+    setWelcomebox(false);
     setIsLoading(true);
     const resp = await runChat(prop);
     const res = formatDynamicParagraph(resp);
@@ -142,6 +144,18 @@ const Home = () => {
         <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
           <div id="chat-component">{components}</div>
 
+          {user.length === 0 && components.length === 0 && welcomebox ? (
+            <div className="h-[100%] flex justify-center items-center gap-3 mx-4">
+              <img className="h-[60px] w-[6 0px] md:h-[100px] md:w-[100px]" src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" alt="" />
+              <div>
+                <p className="text-2xl sm:text-3xl md:text-5xl font-semibold bg-gradient-to-r from-pink-600 via-blue-600 to-indigo-400 inline-block text-transparent bg-clip-text">Hello,</p>
+                <p className="text-xl w-fit sm:text-3xl md:text-5xl font-semibold text-gray-400">How can i help you today?</p>
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+
           <div className="bg-[212121]">
             {isLoading ? (
               <div className="bg-[212121]">
@@ -158,7 +172,7 @@ const Home = () => {
         </div>
         <div className="h-[12vh] poppins bg-[#171717] flex justify-center gap-3 items-center">
           <input
-            className="bg-[#171717] border-[1px] h-12 px-3 w-[400px] rounded-lg border-white"
+            className="bg-[#171717] border-[1px] h-12 px-3 w-[270px] sm:w-[400px] rounded-lg border-white"
             type="text"
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt"
