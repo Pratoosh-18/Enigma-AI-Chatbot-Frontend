@@ -99,6 +99,8 @@ const Home = () => {
   const handleAPI = async (prop) => {
     // console.log("Context user = ", user);
     let componentRes = "";
+    clearInputBox()
+    setWelcomebox(false);
     try {
       // Start loading indicator
       setIsLoading(true);
@@ -150,7 +152,7 @@ const Home = () => {
         <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
           <div id="chat-component">{components}</div>
 
-          {user.length === 0 && components.length === 0 && welcomebox ? (
+          {components.length === 0 && welcomebox ? (
             <div className="h-[100%] flex justify-center items-center gap-3 mx-4">
               <img className="h-[60px] w-[6 0px] md:h-[100px] md:w-[100px]" src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" alt="" />
               <div>
