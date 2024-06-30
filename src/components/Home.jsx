@@ -36,6 +36,17 @@ const Home = () => {
     }
   }, [components]);
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      // Determine which function to call based on your condition
+      if (user.lenght===0) {
+        handleNoAPI(prompt);
+      } else {
+        handleAPI(prompt);
+      }
+    }
+  };
+
   const addComponent = (prop, res) => {
     const newComponent = (
       <PromtAndResponse key={`${prop}-${res}`} p={prop} r={res} />
@@ -108,7 +119,7 @@ const Home = () => {
       const resp = await runChat(prop);
       const res = formatDynamicParagraph(resp);
       componentRes = res;
-      console.log("runChat Response:", res);
+      // console.log("runChat Response:", res);
 
       const data = {
         prompt: prop,
@@ -185,6 +196,7 @@ const Home = () => {
             type="text"
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt"
+            onKeyDown={handleKeyDown}
           />
 
           <div>

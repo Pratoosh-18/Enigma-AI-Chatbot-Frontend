@@ -10,6 +10,7 @@ const Navbar = () => {
     if (c) {
       setUser([]);
     }
+    window.location.reload();
   };
 
   return (
