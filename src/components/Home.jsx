@@ -3,17 +3,19 @@ import runChat from "../gemini/gemini";
 import Navbar from "./Navbar";
 import { UserContext } from "../Context/UserContext";
 import PromtAndResponse from "./PromtAndResponse";
+import HistoryCard from "./HistoryCard";
 
 const Home = () => {
   const [prompt, setPrompt] = useState("Hello");
   const [isLoading, setIsLoading] = useState(false);
   const [APIresponse, setAPIresponse] = useState("");
   const [welcomebox, setWelcomebox] = useState(true);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const promptAPI =
     "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/promptData";
 
   const [components, setComponents] = useState([]);
+  const [historyComponents, setHistoryComponents] = useState([]);
 
   const { user, setUser } = useContext(UserContext);
   const chatComponentRef = useRef(null);
@@ -26,6 +28,7 @@ const Home = () => {
     if (user && user._id) {
       user.searchHistory.forEach((item) => {
         addComponent(item.prompt, item.response);
+        addHistoryComponent(item.prompt);
       });
     }
   }, [user]);
@@ -38,18 +41,18 @@ const Home = () => {
   }, [components]);
 
   const handleKeyDown = async (event) => {
-    if (event.key === 'Enter') {
-      setIsButtonDisabled(true)
+    if (event.key === "Enter") {
+      setIsButtonDisabled(true);
       // Determine which function to call based on your condition
       if (user && user._id) {
-        console.log("User is present")
+        console.log("User is present");
         await handleAPI(prompt);
       } else {
-        console.log("No active user")
+        console.log("No active user");
         await handleNoAPI(prompt);
       }
     }
-    setIsButtonDisabled(false)
+    setIsButtonDisabled(false);
   };
 
   const addComponent = (prop, res) => {
@@ -60,11 +63,17 @@ const Home = () => {
     scrollToBottom();
   };
 
+  const addHistoryComponent = (prop) => {
+    const newComponent = <HistoryCard key={`${prop}`} p={prop} />;
+    setHistoryComponents((prevComponents) => [...prevComponents, newComponent]);
+    scrollToBottom();
+  };
+
   const formatDynamicParagraph = (paragraph) => {
     const lines = paragraph.split("\n");
     let result = [];
     let currentLevel = 0;
-  
+
     lines.forEach((line) => {
       const trimmedLine = line.trim();
       if (trimmedLine.startsWith("***")) {
@@ -93,32 +102,33 @@ const Home = () => {
         }
       }
     });
-  
+
     return result.join("\n");
-  }
+  };
 
   const clearInputBox = () => {
-    const element = document.getElementById("input-box")
-    element.value=""
-  }
+    const element = document.getElementById("input-box");
+    element.value = "";
+  };
 
   const handleNoAPI = async (prop) => {
-    setIsButtonDisabled(true)
-    clearInputBox()
+    setIsButtonDisabled(true);
+    clearInputBox();
     setWelcomebox(false);
     setIsLoading(true);
     const resp = await runChat(prop);
     const res = formatDynamicParagraph(resp);
     addComponent(prop, res);
+    addHistoryComponent(prop);
     setIsLoading(false);
-    setIsButtonDisabled(false)
+    setIsButtonDisabled(false);
   };
 
   const handleAPI = async (prop) => {
     // console.log("Context user = ", user);
-    setIsButtonDisabled(true)
+    setIsButtonDisabled(true);
     let componentRes = "";
-    clearInputBox()
+    clearInputBox();
     setWelcomebox(false);
     try {
       // Start loading indicator
@@ -146,13 +156,14 @@ const Home = () => {
       setAPIresponse(res);
 
       addComponent(prop, res);
+      addHistoryComponent(prop);
     } catch (error) {
       console.log("Error in handling API:", error);
-      setIsButtonDisabled(false)
+      setIsButtonDisabled(false);
     } finally {
       // Stop loading indicator
       setIsLoading(false);
-      setIsButtonDisabled(false)
+      setIsButtonDisabled(false);
     }
   };
 
@@ -165,20 +176,36 @@ const Home = () => {
 
   return (
     <div className="h-[100vh] w-[100%] flex ">
-      {/* <div className="left-bar w-[20%] bg-[#212121] hidden md:flex h-[100%] justify-center pt-5">
-        <p>History</p>
-      </div> */}
-      <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[100%]">
+      <div className="left-bar w-[20%] bg-[#212121] hidden md:flex h-[100vh] flex-col overflow-y-scroll justify-between">
+        <p className="h-[8%] w-[100%] flex justify-center items-center">
+          History
+        </p>
+        <div className="h-[84%] overflow-y-scroll flex flex-col-reverse">
+          {historyComponents}
+        </div>
+        <div className="h-[8%] w-[100%] flex justify-center items-center">
+          {user.username} 
+        </div>
+      </div>
+      <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[80%]">
         <Navbar />
         <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
           <div id="chat-component">{components}</div>
 
           {components.length === 0 && welcomebox ? (
             <div className="h-[100%] flex justify-center items-center gap-3 mx-4">
-              <img className="h-[60px] w-[6 0px] md:h-[100px] md:w-[100px]" src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" alt="" />
+              <img
+                className="h-[60px] w-[6 0px] md:h-[100px] md:w-[100px]"
+                src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png"
+                alt=""
+              />
               <div>
-                <p className="text-2xl sm:text-3xl md:text-5xl font-semibold bg-gradient-to-r from-pink-600 via-blue-600 to-indigo-400 inline-block text-transparent bg-clip-text">Hello,</p>
-                <p className="text-xl w-fit sm:text-3xl md:text-5xl font-semibold text-gray-400">How can i help you today?</p>
+                <p className="text-2xl sm:text-3xl md:text-5xl font-semibold bg-gradient-to-r from-pink-600 via-blue-600 to-indigo-400 inline-block text-transparent bg-clip-text">
+                  Hello,
+                </p>
+                <p className="text-xl w-fit sm:text-3xl md:text-5xl font-semibold text-gray-400">
+                  How can i help you today?
+                </p>
               </div>
             </div>
           ) : (
@@ -224,7 +251,10 @@ const Home = () => {
                 ></lord-icon>
               </button>
             ) : (
-              <button disabled={isButtonDisabled} onClick={() => handleNoAPI(prompt)}>
+              <button
+                disabled={isButtonDisabled}
+                onClick={() => handleNoAPI(prompt)}
+              >
                 <lord-icon
                   src="https://cdn.lordicon.com/ternnbni.json"
                   trigger="hover"
