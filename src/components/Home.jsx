@@ -234,9 +234,9 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="right-bar  lg:ml-[25%] absolute flex flex-col justify-between h-[100%] w-[100%] lg:w-[75%]">
+      <div className="right-bar lg:ml-[25%] absolute flex flex-col justify-between h-[100%] w-[100%] lg:w-[75%]">
         {/* <Navbar /> */}
-        <div className="bg-[#171717] poppins h-[11vh] flex justify-between items-center md:px-10 sm:px-5 px-4">
+        <div className="bg-[#171717] poppins h-[11%] flex justify-between items-center md:px-10 sm:px-5 px-4">
           <p className="text-xl sm:text-2xl flex gap-2 sm:gap-10 items-center">
             <span
               onClick={showHistoryTab}
@@ -280,7 +280,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
+        <div className=" bg-[#171717] h-[78%] overflow-y-scroll">
           <div id="chat-component">{components}</div>
 
           {components.length === 0 && welcomebox ? (
@@ -317,7 +317,7 @@ const Home = () => {
             )}
           </div>
         </div>
-        <div className="h-[12vh] poppins bg-[#171717] flex justify-center gap-3 items-center">
+        <div className="h-[12%] poppins bg-[#171717] flex justify-center gap-3 items-center">
           <input
             id="input-box"
             className="bg-[#171717] border-[1px] h-12 px-3 w-[270px] sm:w-[400px] rounded-lg border-white"
