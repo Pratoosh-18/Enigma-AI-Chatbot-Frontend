@@ -166,7 +166,7 @@ const Home = () => {
 
           <div className="bg-[212121]">
             {isLoading ? (
-              <div className="bg-[212121]">
+              <div className="bg-[212121] mt-2">
                 <div className="flex z-40 gap-1 justify-center items-center bg-white dark:bg-[#171717]">
                   <div className="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                   <div className="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
