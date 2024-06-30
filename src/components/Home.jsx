@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import runChat from "../gemini/gemini";
 import Navbar from "./Navbar";
+import { Link } from "react-router-dom";
 import { UserContext } from "../Context/UserContext";
 import PromtAndResponse from "./PromtAndResponse";
 import HistoryCard from "./HistoryCard";
@@ -13,6 +14,8 @@ const Home = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const promptAPI =
     "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/promptData";
+
+  const [smallScreen, setSmallScreen] = useState(false);
 
   const [components, setComponents] = useState([]);
   const [historyComponents, setHistoryComponents] = useState([]);
@@ -110,6 +113,13 @@ const Home = () => {
     const element = document.getElementById("input-box");
     element.value = "";
   };
+  const logoutUser = () => {
+    let c = confirm("Are you sure you want to logout?");
+    if (c) {
+      setUser([]);
+    }
+    window.location.reload();
+  };
 
   const handleNoAPI = async (prop) => {
     setIsButtonDisabled(true);
@@ -167,6 +177,13 @@ const Home = () => {
     }
   };
 
+  const showHistoryTab = () => {
+    setSmallScreen(true);
+  };
+  const hideHistoryTab = () => {
+    setSmallScreen(false);
+  };
+
   function scrollToBottom() {
     const element = document.getElementById("chat-component");
     if (element) {
@@ -176,19 +193,96 @@ const Home = () => {
 
   return (
     <div className="h-[100vh] w-[100%] flex ">
-      <div className="left-bar w-[20%] bg-[#212121] hidden md:flex h-[100vh] flex-col overflow-y-scroll justify-between">
-        <p className="h-[8%] w-[100%] flex justify-center items-center">
-          History
+      <div
+        id="left-bar"
+        className={
+          smallScreen
+            ? "absolute z-10 h-[100%] w-[80%] sm:w-[50%] flex bg-[#212121] flex-col overflow-y-scroll justify-between duration-1000"
+            : "left-bar absolute lg:w-[25%] bg-[#212121] translate-x-[-25%] lg:translate-x-0 md:flex h-[100vh] flex-col overflow-y-scroll justify-between duration-1000"
+        }
+      >
+        <p className="h-[8%] w-[100%] flex justify-around items-center text-lg">
+          <p className="block lg:hidden"></p>
+         <p>
+
+          Search History
+         </p>
+          <span
+            onClick={hideHistoryTab}
+            class="block lg:hidden hover:cursor-pointer material-symbols-outlined"
+          >
+            close
+          </span>
         </p>
         <div className="h-[84%] overflow-y-scroll flex flex-col-reverse">
           {historyComponents}
+          {historyComponents.length === 0 ? (
+            <div className="h-[100%] w-[100%] flex flex-col justify-center items-center">
+              <p>New user? Register now !!</p>
+              <p>Login to show and save history</p>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
-        <div className="h-[8%] w-[100%] flex justify-center items-center">
-          {user.username} 
+        <div className="h-[8%] w-[100%] flex gap-2 justify-center items-center">
+          <div>
+            <img
+              className="h-[25px] w-[25px]"
+              src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
+              alt=""
+            />
+          </div>
+          {user.username ? <>{user.username}</> : <>Anonymous user</>}
         </div>
       </div>
-      <div className="right-bar flex flex-col justify-between h-[100%] w-[100%] md:w-[80%]">
-        <Navbar />
+
+      <div className="right-bar  lg:ml-[25%] absolute flex flex-col justify-between h-[100%] w-[100%] lg:w-[75%]">
+        {/* <Navbar /> */}
+        <div className="bg-[#171717] poppins h-[11vh] flex justify-between items-center md:px-10 sm:px-5 px-4">
+          <p className="text-xl sm:text-2xl flex gap-2 sm:gap-10 items-center">
+            <span
+              onClick={showHistoryTab}
+              className="block hover:cursor-pointer lg:hidden material-symbols-outlined"
+            >
+              menu
+            </span>
+            Enigma AI - 3.0
+          </p>
+          <div className="flex gap-2 sm:gap-5">
+            {user.length === 0 ? (
+              <Link to={"/register"}>
+                <button className="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                  <span className="relative px-2 md:px-5 py-1 sm:py-2 md:py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    Register
+                  </span>
+                </button>
+              </Link>
+            ) : (
+              <></>
+            )}
+
+            {user._id ? (
+              <button
+                onClick={logoutUser}
+                className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+              >
+                <span className="relative px-2 md:px-5 py-1 sm:py-2 md:py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                  Logout
+                </span>
+              </button>
+            ) : (
+              <Link to={"/login"} className="flex justify-between items-center">
+                <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                  <span className="relative px-2 md:px-5 py-1 sm:py-2 md:py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    Login
+                  </span>
+                </button>
+              </Link>
+            )}
+          </div>
+        </div>
+
         <div className=" bg-[#171717] h-[78vh] overflow-y-scroll">
           <div id="chat-component">{components}</div>
 
