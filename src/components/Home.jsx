@@ -192,7 +192,7 @@ const Home = () => {
   }
 
   return (
-    <div className="h-[100vh] w-[100%] flex overflow-hidden">
+    <div className="h-[100%] w-[100%] flex overflow-hidden">
       <div
         id="left-bar"
         className={
@@ -234,7 +234,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="right-bar lg:ml-[25%] absolute flex flex-col justify-between h-[100%] w-[100%] lg:w-[75%]">
+      <div className="right-bar lg:ml-[25%] absolute flex flex-col justify-between h-[100vh] w-[100%] lg:w-[75%]">
         {/* <Navbar /> */}
         <div className="bg-[#171717] poppins h-[11%] flex justify-between items-center md:px-10 sm:px-5 px-4">
           <p className="text-xl sm:text-2xl flex gap-2 sm:gap-10 items-center">
