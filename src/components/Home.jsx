@@ -192,21 +192,18 @@ const Home = () => {
   }
 
   return (
-    <div className="h-[100vh] w-[100%] flex ">
+    <div className="h-[100vh] w-[100%] flex overflow-hidden">
       <div
         id="left-bar"
         className={
           smallScreen
-            ? "absolute z-10 h-[100%] w-[80%] sm:w-[50%] flex bg-[#212121] flex-col overflow-y-scroll justify-between duration-1000"
+            ? "absolute z-10 h-[100vh] w-[80%] sm:w-[50%] flex bg-[#212121] flex-col overflow-y-scroll justify-between duration-1000"
             : "left-bar absolute lg:w-[25%] bg-[#212121] translate-x-[-25%] lg:translate-x-0 md:flex h-[100vh] flex-col overflow-y-scroll justify-between duration-1000"
         }
       >
         <p className="h-[8%] w-[100%] flex justify-around items-center text-lg">
           <p className="block lg:hidden"></p>
-         <p>
-
-          Search History
-         </p>
+          <p>Search History</p>
           <span
             onClick={hideHistoryTab}
             class="block lg:hidden hover:cursor-pointer material-symbols-outlined"
