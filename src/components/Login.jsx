@@ -25,6 +25,12 @@ const Login = () => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleLogin(event)
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const data = { email, password };
@@ -89,6 +95,7 @@ const Login = () => {
               <p className="text-sm mb-1">Enter your email:</p>
             </div>
             <input
+              onKeyDown={handleKeyDown}
               className="bg-[#171717] p-3 mb-3 border-[1px] rounded-lg w-[250px] sm:w-[300px]"
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -106,6 +113,7 @@ const Login = () => {
               <p className="text-sm mb-1">Password :</p>
             </div>
             <input
+              onKeyDown={handleKeyDown}
               className="bg-[#171717] p-3 mb-3 border-[1px] rounded-lg w-[250px] sm:w-[300px]"
               onChange={(e) => {
                 setPassword(e.target.value);

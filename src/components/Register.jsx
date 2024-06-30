@@ -25,6 +25,12 @@ const Register = () => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleRegister(event)
+    }
+  };
+
   const handleRegister = async () => {
     setIsRegistered(false);
     setIsLoading(true);
@@ -94,6 +100,7 @@ const Register = () => {
           <p className="text-sm mb-1">Create a username:</p>
         </div>
         <input
+            onKeyDown={handleKeyDown}
           className="bg-[#171717] p-3 mb-3 border-[1px] rounded-lg w-[250px] sm:w-[300px]"
           onChange={(e) => {
             setUsername(e.target.value);
@@ -109,6 +116,7 @@ const Register = () => {
           <p className="text-sm mb-1">Enter your email:</p>
         </div>
         <input
+            onKeyDown={handleKeyDown}
           className="bg-[#171717] p-3 mb-3 border-[1px] rounded-lg w-[250px] sm:w-[300px]"
           onChange={(e) => {
             setEmail(e.target.value);
@@ -124,6 +132,7 @@ const Register = () => {
           <p className="text-sm mb-1">Create a password:</p>
         </div>
         <input
+            onKeyDown={handleKeyDown}
           className="bg-[#171717] p-3 mb-3 border-[1px] rounded-lg w-[250px] sm:w-[300px]"
           onChange={(e) => {
             setPassword(e.target.value);
@@ -139,6 +148,7 @@ const Register = () => {
           <p className="text-sm mb-1">Confirm password:</p>
         </div>
         <input
+            onKeyDown={handleKeyDown}
           className="bg-[#171717] p-3 mb-3 border-[1px] rounded-lg w-[250px] sm:w-[300px]"
           onChange={(e) => {
             setConfirmPassword(e.target.value);

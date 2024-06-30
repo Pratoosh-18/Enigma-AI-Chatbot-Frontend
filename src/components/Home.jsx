@@ -5,10 +5,11 @@ import { UserContext } from "../Context/UserContext";
 import PromtAndResponse from "./PromtAndResponse";
 
 const Home = () => {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState("Hello");
   const [isLoading, setIsLoading] = useState(false);
   const [APIresponse, setAPIresponse] = useState("");
   const [welcomebox, setWelcomebox] = useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const promptAPI =
     "https://enigmav3-ai-chatbot-backend.onrender.com/api/v3/user/promptData";
 
@@ -36,15 +37,19 @@ const Home = () => {
     }
   }, [components]);
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = async (event) => {
     if (event.key === 'Enter') {
+      setIsButtonDisabled(true)
       // Determine which function to call based on your condition
-      if (user.lenght===0) {
-        handleNoAPI(prompt);
+      if (user && user._id) {
+        console.log("User is present")
+        await handleAPI(prompt);
       } else {
-        handleAPI(prompt);
+        console.log("No active user")
+        await handleNoAPI(prompt);
       }
     }
+    setIsButtonDisabled(false)
   };
 
   const addComponent = (prop, res) => {
@@ -98,6 +103,7 @@ const Home = () => {
   }
 
   const handleNoAPI = async (prop) => {
+    setIsButtonDisabled(true)
     clearInputBox()
     setWelcomebox(false);
     setIsLoading(true);
@@ -105,10 +111,12 @@ const Home = () => {
     const res = formatDynamicParagraph(resp);
     addComponent(prop, res);
     setIsLoading(false);
+    setIsButtonDisabled(false)
   };
 
   const handleAPI = async (prop) => {
     // console.log("Context user = ", user);
+    setIsButtonDisabled(true)
     let componentRes = "";
     clearInputBox()
     setWelcomebox(false);
@@ -140,9 +148,11 @@ const Home = () => {
       addComponent(prop, res);
     } catch (error) {
       console.log("Error in handling API:", error);
+      setIsButtonDisabled(false)
     } finally {
       // Stop loading indicator
       setIsLoading(false);
+      setIsButtonDisabled(false)
     }
   };
 
@@ -214,7 +224,7 @@ const Home = () => {
                 ></lord-icon>
               </button>
             ) : (
-              <button onClick={() => handleNoAPI(prompt)}>
+              <button disabled={isButtonDisabled} onClick={() => handleNoAPI(prompt)}>
                 <lord-icon
                   src="https://cdn.lordicon.com/ternnbni.json"
                   trigger="hover"
